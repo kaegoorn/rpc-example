@@ -1,4 +1,4 @@
-*small example of rpc with support multithread
+*small example of rpc with multithreading support
 
 abstractcommand - AbstractCommand and RequestHandler, which is inherited from AbstractCommand, in order to be able to implement the server part and the client library.
 
