@@ -15,6 +15,10 @@ public:
   virtual Error serialize(Protocol *, ByteArray &) = 0;
 };
 
+// simplified, there should be a normal classes here
+using AbstractRequest = AbstractCommand;
+using AbstractReply = AbstractCommand;
+
 class AbstractRequestHandler {
 public:
   enum Flag { Long = 1 };
@@ -37,12 +41,12 @@ public:
     return serialNumber_;
   }
 
-  const AbstractCommand &reply() const {
-    return *reply_;
+  std::shared_ptr<AbstractReply> reply() const {
+    return reply_;
   }
 
 protected:
-  void setReply(AbstractCommand *reply) {
+  void setReply(std::shared_ptr<AbstractReply> reply) {
     reply_ = reply;
   }
 
@@ -50,7 +54,7 @@ protected:
   uint32_t flags_ = 0;
 
   SerialNumber serialNumber_;
-  AbstractCommand *reply_ = nullptr;
+  std::shared_ptr<AbstractReply> reply_;
 };
 
 // Handler
@@ -60,6 +64,4 @@ public:
 };
 
 // simplified, there should be a normal classes here
-using AbstractRequest = AbstractCommand;
-using AbstractReply = AbstractCommand;
 template <class AbstractCommand> class AbstractReplyHandler : public RequestHandler<AbstractCommand> {};

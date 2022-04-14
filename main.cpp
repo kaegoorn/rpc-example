@@ -24,6 +24,24 @@ protected:
   std::string hello_;
 };
 
+class HelloReply : public AbstractReply {
+public:
+  const std::string &bye() const {
+    return bye_;
+  }
+
+  void setBye(const std::string_view &bye) {
+    bye_ = bye;
+  }
+
+  Error serialize(Protocol *protocol, ByteArray &data) override {
+    return protocol->serializeString(data, bye_);
+  }
+
+private:
+  std::string bye_;
+};
+
 class HelloRequestHandler : public RequestHandler<HelloCommand> {
 public:
   HelloRequestHandler(SerialNumber serialNumber) : RequestHandler<HelloCommand>(static_cast<uint32_t>(AbstractRequestHandler::Flag::Long), serialNumber) {}
@@ -31,7 +49,10 @@ public:
   Error deserialize(Protocol *protocol, ByteArrayView data) override {
     return protocol->deserializeString(data, hello_);
   }
-  void process() override {}
+  void process() override {
+    std::shared_ptr<HelloReply> reply;
+    setReply(reply);
+  }
 };
 
 int main() {
